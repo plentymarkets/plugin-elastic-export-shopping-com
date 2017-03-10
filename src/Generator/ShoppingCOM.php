@@ -82,9 +82,9 @@ class ShoppingCOM extends CSVPluginGenerator
             if(is_array($variationIdList) && count($variationIdList) > 0)
             {
                 /**
-                 * @var \ElasticExportKaufluxDE\IDL_ResultList\KaufluxDE $idlResultList
+                 * @var \ElasticExportShoppingCOM\IDL_ResultList\ShoppingCOM $idlResultList
                  */
-                $idlResultList = pluginApp(\ElasticExportKaufluxDE\IDL_ResultList\KaufluxDE::class);
+                $idlResultList = pluginApp(\ElasticExportShoppingCOM\IDL_ResultList\ShoppingCOM::class);
                 $idlResultList = $idlResultList->getResultList($variationIdList, $settings);
             }
 
@@ -109,7 +109,7 @@ class ShoppingCOM extends CSVPluginGenerator
                 $data = [
                     'Händler-SKU' 			=> $item['data']['item']['id'],
                     'Hersteller' 			=> $this->elasticExportHelper->getExternalManufacturerName((int)$item['data']['item']['manufacturer']['id']),
-                    'EAN' 					=> $item['data']['barcodes'][0]['code'],
+                    'EAN' 					=> $this->elasticExportHelper->getBarcodeByType($item, $settings->get('barcode')),
                     'Produktname' 			=> $this->elasticExportHelper->getName($item, $settings),
                     'Produktbeschreibung' 	=> $this->elasticExportHelper->getDescription($item, $settings),
                     'Preis' 				=> number_format((float)$this->idlVariations[$item['id']]['variationRetailPrice.price'], 2, ',', ''),
