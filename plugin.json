@@ -16,9 +16,12 @@
   "categories": [
     "3523"
   ],
-  "version": "1.0.3",
+  "version": "1.0.4",
   "marketplaceName": {
     "de": "Shopping.com",
     "en": "Shopping.com"
+  },
+  "dependencies": {
+    "ElasticExport": ">=1.0.18"
   }
 }

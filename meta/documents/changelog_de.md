@@ -1,5 +1,10 @@
 # Release Notes für Elastic Export Shopping.com
 
+## v1.0.4 (2017-05-24)
+
+### Geändert
+- Das Plugin Elastic Export ist nun Voraussetzung zur Nutzung des Pluginformats ShoppingCOM.
+
 ## v1.0.3 (2017-03-22)
 
 ### Behoben
