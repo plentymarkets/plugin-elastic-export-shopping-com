@@ -21,7 +21,7 @@
     "de": "Shopping.com",
     "en": "Shopping.com"
   },
-  "dependencies": {
+  "require": {
     "ElasticExport": ">=1.0.18"
   }
 }
