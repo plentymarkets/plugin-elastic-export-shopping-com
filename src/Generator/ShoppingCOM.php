@@ -5,7 +5,6 @@ namespace ElasticExportShoppingCOM\Generator;
 use ElasticExport\Helper\ElasticExportPriceHelper;
 use ElasticExport\Helper\ElasticExportPropertyHelper;
 use ElasticExport\Helper\ElasticExportStockHelper;
-use ElasticExportBilligerDE\Helper\PropertyHelper;
 use Plenty\Modules\DataExchange\Contracts\CSVPluginGenerator;
 use Plenty\Modules\Helper\Services\ArrayHelper;
 use Plenty\Modules\DataExchange\Models\FormatSetting;
@@ -48,11 +47,6 @@ class ShoppingCOM extends CSVPluginGenerator
      * @var ArrayHelper
      */
     private $arrayHelper;
-
-    /**
-     * @var array
-     */
-    private $shippingCostCache;
 
     /**
      * @var array
@@ -162,10 +156,13 @@ class ShoppingCOM extends CSVPluginGenerator
                                 $previousItemId = $variation['data']['item']['id'];
 
                                 // Build the caches arrays
-                                $this->buildCaches($variation, $settings);
+                                $this->buildCaches($variation);
 
                                 // Build the new row for printing in the CSV file
                                 $this->buildRow($variation, $settings);
+
+                                // New line was added
+                                $limit++;
                             }
                         }
                         catch(\Throwable $throwable)
@@ -176,9 +173,6 @@ class ShoppingCOM extends CSVPluginGenerator
                                 'VariationId'    => (string)$variation['id']
                             ]);
                         }
-
-                        // New line was added
-                        $limit++;
                     }
 
                     $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.buildRowsDuration', [
@@ -193,7 +187,6 @@ class ShoppingCOM extends CSVPluginGenerator
             'Whole file generation duration' => microtime(true) - $startTime,
         ]);
     }
-
 
     /**
      * Creates the header of the CSV file.
@@ -241,11 +234,14 @@ class ShoppingCOM extends CSVPluginGenerator
         // Only variations with the Retail Price greater than zero will be handled
         if(!is_null($priceList['price']) && $priceList['price'] > 0)
         {
+            // Get shipping cost
+            $shippingCost = $this->getShippingCost($variation, $settings);
+
             // Get the manufacturer
             $manufacturer = $this->getManufacturer($variation);
 
-            // Get image list in the specified order
-            $imageList = $this->elasticExportHelper->getImageListInOrder($variation, $settings, 1, ElasticExportCoreHelper::ITEM_IMAGES);
+            // Get first item image
+            $image = array_shift($this->elasticExportHelper->getImageListInOrder($variation, $settings, 1, ElasticExportCoreHelper::ITEM_IMAGES));
 
             $data = [
                 'Händler-SKU' 			=> $variation['data']['item']['id'],
@@ -255,11 +251,11 @@ class ShoppingCOM extends CSVPluginGenerator
                 'Produktbeschreibung' 	=> $this->elasticExportHelper->getMutatedDescription($variation, $settings),
                 'Preis' 				=> $priceList['price'],
                 'Produkt-URL' 			=> $this->elasticExportHelper->getMutatedUrl($variation, $settings, true, false),
-                'Produktbild-URL' 		=> $imageList[0],
+                'Produktbild-URL' 		=> $image,
                 'Kategorie'				=> $this->elasticExportHelper->getCategory((int)$variation['data']['defaultCategories'][0]['id'], $settings->get('lang'), $settings->get('plentyId')),
                 'Verfügbar' 			=> 'Ja',
                 'Verfügbarkeitdetails' 	=> $this->elasticExportHelper->getAvailability($variation, $settings),
-                'Versand: Landtarif' 	=> $this->elasticExportHelper->getShippingCost($variation['data']['item']['id'], $settings, 0),
+                'Versand: Landtarif' 	=> $shippingCost,
                 'Produktgewicht'        => $variation['data']['variation']['weightG'],
                 'Produkttyp' 			=> $this->elasticExportPropertyHelper->getItemPropertyByBackendName($variation, 'product_type', $settings->get('lang')),
                 'Grundpreis' 			=> $this->elasticExportPriceHelper->getBasePrice($variation, $priceList['price']),
@@ -277,6 +273,25 @@ class ShoppingCOM extends CSVPluginGenerator
                 'VariationId' => (string)$variation['id']
             ]);
         }
+    }
+
+    /**
+     * Get the shipping cost.
+     *
+     * @param $variation
+     * @param $settings
+     * @return string
+     */
+    private function getShippingCost($variation, $settings):string
+    {
+        $shippingCost = $this->elasticExportHelper->getShippingCost($variation['data']['item']['id'], $settings, 0);
+
+        if(!is_null($shippingCost) && $shippingCost > 0)
+        {
+            return number_format((float)$shippingCost, 2, '.', '');
+        }
+
+        return '';
     }
 
     /**
@@ -299,15 +314,11 @@ class ShoppingCOM extends CSVPluginGenerator
      * Build the cache arrays for the item variation.
      *
      * @param $variation
-     * @param $settings
      */
-    private function buildCaches($variation, $settings)
+    private function buildCaches($variation)
     {
         if(!is_null($variation) && !is_null($variation['data']['item']['id']))
         {
-            $shippingCost = $this->elasticExportHelper->getShippingCost($variation['data']['item']['id'], $settings, 0);
-            $this->shippingCostCache[$variation['data']['item']['id']] = (float)$shippingCost;
-
             if(!is_null($variation['data']['item']['manufacturer']['id']))
             {
                 if(!isset($this->manufacturerCache) || (isset($this->manufacturerCache) && !array_key_exists($variation['data']['item']['manufacturer']['id'], $this->manufacturerCache)))
