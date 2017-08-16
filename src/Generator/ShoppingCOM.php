@@ -229,7 +229,7 @@ class ShoppingCOM extends CSVPluginGenerator
         $rowTime = microtime(true);
 
         // Get the price list
-        $priceList = $this->elasticExportPriceHelper->getPriceList($variation, $settings);
+        $priceList = $this->elasticExportPriceHelper->getPriceList($variation, $settings, 2, ',');
 
         // Only variations with the Retail Price greater than zero will be handled
         if(!is_null($priceList['price']) && $priceList['price'] > 0)
@@ -288,7 +288,7 @@ class ShoppingCOM extends CSVPluginGenerator
 
         if(!is_null($shippingCost) && $shippingCost > 0)
         {
-            return number_format((float)$shippingCost, 2, '.', '');
+            return number_format((float)$shippingCost, 2, ',', '');
         }
 
         return '';

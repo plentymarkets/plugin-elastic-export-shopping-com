@@ -1,6 +1,6 @@
 # Release Notes für Elastic Export Shopping.com
 
-## v1.0.6 (2017-08-14)
+## v1.0.6 (2017-08-16)
 
 ### Geändert
 - Das Format-Plugin basiert nun nur noch auf Elastic Search.
@@ -8,8 +8,8 @@
 
 ## v1.0.5 (2017-07-18)
 
- ### Geändert
- - Das Plugin Elastic Export ist nun Voraussetzung zur Nutzung des Plugin-Formats.
+### Geändert
+- Das Plugin Elastic Export ist nun Voraussetzung zur Nutzung des Plugin-Formats.
 
 ## v1.0.4 (2017-05-24)
 

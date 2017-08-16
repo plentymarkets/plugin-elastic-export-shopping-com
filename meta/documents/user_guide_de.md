@@ -48,7 +48,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             Dateiname
         </td>
         <td>
-            Der Dateiname muss auf <b>.csv</b> oder <b>.txt</b> enden, damit Shopping.com die Datei erfolgreich importieren kann.
+            Der Dateiname muss auf <b>.csv</b> oder <b>.txt</b> enden.
         </td>
     </tr>
     <tr>
@@ -142,31 +142,74 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
     </tr>
     <tr>
         <td>
-            ID
+            Händler-SKU
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Die <b>SKU</b> der Variante auf Basis der gewählten Auftragsherkunft in den Formateinstellungen.
+            <b>Inhalt:</b> Die <b>Artikel-ID</b> des Artikels.
         </td>
     </tr>
     <tr>
         <td>
-            Titel
+            Hersteller
+        </td>
+        <td>
+            <b>Inhalt:</b> Der <b>Name des Herstellers</b> des Artikels. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            EAN
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Beschränkung:</b> kein HTML-Code erlaubt<br>
+            <b>Inhalt:</b> Entsprechend der Formateinstellung <b>Barcode</b>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produktname
+        </td>
+        <td>
+            <b>Pflichtfeld</b><br>
             <b>Inhalt:</b> Entsprechend der Formateinstellung <b>Artikelname</b>.
         </td>
     </tr>
     <tr>
         <td>
-            Beschreibung
+            Produktbeschreibung
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Beschränkung:</b> kein HTML-Code erlaubt<br>
             <b>Inhalt:</b> Entsprechend der Formateinstellung <b>Beschreibung</b>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Preis
+        </td>
+        <td>
+            <b>Pflichtfeld</b><br>
+            <b>Inhalt:</b> Der <b>Verkaufspreis</b> der Variante.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produkt-URL
+        </td>
+        <td>
+            <b>Pflichtfeld</b><br>
+            <b>Inhalt:</b> Der <b>URL-Pfad</b> des Artikels abhängig vom gewählten <b>Mandanten</b> in den Formateinstellungen.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produktbild-URL
+        </td>
+        <td>
+            <b>Pflichtfeld</b><br>
+            <b>Erlaubte Dateitypen:</b> jpg, gif, bmp, png.<br>
+            <b>Inhalt:</b> Der <b>URL-Pfad</b> des ersten Artikelbild nach dem Formateinstellung <b>bild</b>. Artikelbilder werden über Artikelbilder priorisiert.
         </td>
     </tr>
     <tr>
@@ -180,78 +223,25 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
     </tr>
     <tr>
         <td>
-            Artikel-URL
+            Verfügbar
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Der <b>URL-Pfad</b> des Artikels abhängig vom gewählten <b>Mandanten</b> in den Formateinstellungen.
+            <b>Erlaubte Werte:</b> Ja, Nein<br>
+            <b>Inhalt:</b> Der <b>Artikel Verfügbarkeitszustand</b> des Artikels. Dies hat den Wert <b>Ja</b> als vordefinierten Wert.
         </td>
     </tr>
     <tr>
         <td>
-            Bild-URL
+            Verfügbarkeitdetails
         </td>
         <td>
-            <b>Pflichtfeld</b><br>
-            <b>Beschränkung:</b> <b>Mindestgröße:</b> 450 x 450 Pixel. <b>Maximalgröße:</b> 1000 x 1000 Pixel, <b>Erlaubte Dateitypen:</b> jpg, gif, bmp, png<br>
-            <b>Inhalt:</b> URL zu dem Bild gemäß der Formateinstellungen <b>Bild</b>. Variantenbilder werden vor Artikelbildern priorisiert.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Zusätzliche Bild-URL
-        </td>
-        <td>
-            <b>Beschränkung:</b> <b>Mindestgröße:</b> 450 x 450 Pixel. <b>Maximalgröße:</b> 1000 x 1000 Pixel, <b>Erlaubte Dateitypen:</b> jpg, gif, bmp, png<br>
-           <b>Inhalt:</b> Liste von Bild-URLs von bis zu 10 zusätzlichen Bildern gemäß der Formateinstellungen <b>Bild</b>. Variantenbilder werden vor Artikelbildern priorisiert.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Zustand
-        </td>
-        <td>
-            <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Der <b>Zustand API</b> der Variante. <b>[0]Neu</b> wird als <b>Neu</b> übertragen. Alle anderen Einstellungen werden als **Gebraucht** übertragen.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Bestand
-        </td>
-        <td>
-            <b>Pflichtfeld</b><br>
-            <b>Erlaubte Werte:</b> Auf Lager, Nicht vorrätig, Verfügbar, Auf Vorbestellung<br>
             <b>Inhalt:</b> Übersetzung gemäß der Formateinstellung <b>Artikelverfügbarkeit überschreiben</b>.
         </td>
     </tr>
     <tr>
         <td>
-            Marke
-        </td>
-        <td>
-            <b>Inhalt:</b> Der <b>Name des Herstellers</b> des Artikels. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            EAN
-        </td>
-        <td>
-            <b>Inhalt:</b> Entsprechend der Formateinstellung <b>Barcode</b>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Artikelnummer
-        </td>
-        <td>
-            <b>Inhalt:</b> Das <b>Modell</b> unter <b>Artikel » Artikel bearbeiten » Artikel öffnen » Variante öffnen » Einstellungen » Grundeinstellungen</b>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Versandkosten
+            Versand: Landtarif
         </td>
         <td>
             <b>Pflichtfeld</b><br>
@@ -260,61 +250,18 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
     </tr>
     <tr>
         <td>
-            Geschlecht
+            Produktgewicht
         </td>
         <td>
-            <b>Erlaubte Werte:</b> männlich, weiblich, nicht geschlechtspezifisch<br>
-            <b>Inhalt:</b> Der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>Shopzilla.de » Geschlecht</b> verknüpft wurde.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Altersgruppe
-        </td>
-        <td>
-            <b>Erlaubte Werte:</b> Erwachsene, Kinder<br>
-            <b>Inhalt:</b> Der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>Shopzilla.de » Altersgruppe</b> verknüpft wurde.
+            <b>Inhalt:</b> Das <b>Gewicht</b> unter <b>Artikel » Artikel bearbeiten » Artikel öffnen » Variante öffnen » Einstellungen » Maße</b>.
         </td>
     </tr>
     <tr>
         <td>
-            Größe
+            Produkttyp
         </td>
         <td>
-            <b>Inhalt:</b> Der Wert eines Attributs, bei dem die Attributverknüpfung für <b>Google Shopping</b> mit <b>Text</b> gesetzt wurde. Alternativ der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>Shopzilla.de » Größe</b> verknüpft wurde.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Farbe
-        </td>
-        <td>
-            <b>Inhalt:</b> Der Wert eines Attributs, bei dem die Attributverknüpfung für <b>Google Shopping</b> mit <b>Farbe</b> gesetzt wurde. Alternativ der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>Shopzilla.de » Farbe</b> verknüpft wurde.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Material
-        </td>
-        <td>
-            <b>Inhalt:</b> Der Wert eines Attributs, bei dem die Attributverknüpfung für <b>Google Shopping</b> mit <b>Material</b> gesetzt wurde. Alternativ der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>Shopzilla.de » Material</b> verknüpft wurde.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Muster
-        </td>
-        <td>
-            <b>Inhalt:</b> Der Wert eines Attributs, bei dem die Attributverknüpfung für <b>Google Shopping</b> mit <b>Muster</b> gesetzt wurde. Alternativ der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>Shopzilla.de » Muster</b> verknüpft wurde.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Produktgruppe
-        </td>
-        <td>
-            <b>Pflichtfeld bei Variantenartikeln</b><br>
-            <b>Inhalt:</b> Die Artikel-ID des Artikels.
+            <b>Inhalt:</b> Der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>product_type</b> backend name hat.
         </td>
     </tr>
     <tr>
@@ -323,23 +270,6 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
             <b>Inhalt:</b> Die <b>Grundpreisinformation</b> im Format "Preis / Einheit". (Beispiel: 10,00 EUR / Kilogramm)
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Empfohlener Preis
-        </td>
-        <td>
-            <b>Inhalt:</b> Der <b>Verkaufspreis</b> vom Preis-Typ <b>UVP</b> der Variante.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Preis
-        </td>
-        <td>
-            <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Der <b>Verkaufspreis</b> der Variante.
         </td>
     </tr>
 </table>

@@ -117,15 +117,6 @@ The following table lists details for settings, format settings and recommended 
             This option is not relevant for this format.
         </td>
     </tr>
-    <tr>
-        <td>
-            Override item availability
-        </td>
-        <td>
-            This setting has to be activated, because Shopping.com only allows specific values, that have to be filled in.
-            You can find further information in chapter <b>Overview of available columns</b>.
-        </td>
-    </tr>
 </table>
 
 
@@ -142,31 +133,74 @@ The following table lists details for settings, format settings and recommended 
     </tr>
     <tr>
         <td>
-            ID
+            Händler-SKU
         </td>
         <td>
             <b>Required</b><br>
-            The <b>SKU</b> of the variation based on the chosen order referrer in the format settings.
+            The <b>item ID</b> of the main variation.
         </td>
     </tr>
     <tr>
         <td>
-            Titel
+            Hersteller
         </td>
         <td>
-            <b>Required</b><br>
-            <b>Limitation:</b> no HTML code allowed<br>
-            <b>Content:</b> According to the format setting <b>item name</b>.
+            <b>Content:</b> The <b>name of the manufacturer</b> of the item. The <b>external name</b> within <b>Settings » Items » Manufacturer</b> will be preferred if existing.
         </td>
     </tr>
     <tr>
         <td>
-            Beschreibung
+            EAN
         </td>
         <td>
             <b>Required</b><br>
-            <b>Limitation:</b> no HTML code allowed<br>
+            <b>Content:</b> According to the format setting <b>Barcode</b>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produktname
+        </td>
+        <td>
+            <b>Required</b><br>
+            <b>Content:</b> According to the format setting <b>Item name</b>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produktbeschreibung
+        </td>
+        <td>
+            <b>Required</b><br>
             <b>Content:</b> According to the format setting <b>Description</b>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Preis
+        </td>
+        <td>
+            <b>Required</b><br>
+            <b>Content:</b> The <b>sales price</b> of the variation.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produkt-URL
+        </td>
+        <td>
+            <b>Required</b><br>
+            <b>Content:</b> The <b>URL path</b> of the item depending on the chosen <b>client</b> in the format settings.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Produktbild-URL
+        </td>
+        <td>
+            <b>Required</b><br>
+            <b>Allowed file types:</b> jpg, gif, bmp, png.<br>
+            <b>Content:</b> The <b>URL path</b> of the first item image according to the format setting <b>image</b>. Item images are prioritizied over item images.
         </td>
     </tr>
     <tr>
@@ -180,78 +214,25 @@ The following table lists details for settings, format settings and recommended 
     </tr>
     <tr>
         <td>
-            Artikel-URL
+            Verfügbar
         </td>
         <td>
             <b>Required</b><br>
-            <b>Content:</b> The <b>URL path</b> of the item depending on the chosen <b>client</b> in the format settings.
+            <b>Allowed values:</b> Ja, Nein<br>
+            <b>Content:</b> The <b>item availabilty condition</b> of the item. This has the value <b>Ja</b> as predefined value.
         </td>
     </tr>
     <tr>
         <td>
-            Bild-URL
+            Verfügbarkeitdetails
         </td>
         <td>
-            <b>Required</b><br>
-            <b>Limitation:</b> <b>Minimium size:</b> 450 x 450 pixel. <b>Maximum size:</b> 1000 x 1000 pixel, <b>Allowed file types:</b> jpg, gif, bmp, png<br>
-            <b>Content:</b> URL of the image according to the format setting <b>image</b>. Variation images are prioritizied over item images.
+             <b>Content:</b> Translation according to the format setting <b>Override item availabilty</b>.
         </td>
     </tr>
     <tr>
         <td>
-            Zusätzliche Bild-URL
-        </td>
-        <td>
-             <b>Limitation:</b> <b>Minimium size:</b> 450 x 450 pixel. <b>Maximum size:</b> 1000 x 1000 pixel, <b>Allowed file types:</b> jpg, gif, bmp, png<br>
-           <b>Content:</b> A list of up to 10 URLs of the image according to the format setting <b>image</b> separated by comma. Variation images are prioritizied over item images.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Zustand
-        </td>
-        <td>
-            <b>Required</b><br>
-            <b>Content:</b> The value from <b>Condition for API</b> of the variation will be translated. <b>[0]New</b> will be exported as <b>Neu</b>. Every other option will be exported as **Gebraucht**.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Bestand
-        </td>
-        <td>
-            <b>Required</b><br>
-            <b>Allowed values:</b><br> Auf Lager, Nicht vorrätig, Verfügbar, Auf Vorbestellung<br>
-            <b>Content:</b> Translation according to the format setting <b>Override item availabilty</b>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Marke
-        </td>
-        <td>
-            <b>Content:</b> The <b>name of the manufacturer</b> of the item. The <b>external name</b> within <b>Settings » Items » Manufacturer</b> will be preferred if existing.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            EAN
-        </td>
-        <td>
-            <b>Content:</b> According to the format setting <b>Barcode</b>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Artikelnummer
-        </td>
-        <td>
-            <b>Content:</b> The <b>model</b> within <b>Items » Edit item » Open item » Open variation » Settings » Basic settings</b>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Versandkosten
+            Versand: Landtarif
         </td>
         <td>
             <b>Required</b><br>
@@ -260,61 +241,18 @@ The following table lists details for settings, format settings and recommended 
     </tr>
     <tr>
         <td>
-            Geschlecht
+            Produktgewicht
         </td>
         <td>
-            <b>Allowed values:</b><br> männlich, weiblich, nicht geschlechtspezifisch<br>
-            <b>Content:</b> The value of a property of the type <b>Text</b> or <b>Selection</b>, that is linked to <b>Shopzilla.de » Gender</b>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Altersgruppe
-        </td>
-        <td>
-            <b>Allowed values:</b><br> Erwachsene, Kinder<br>
-            <b>Content:</b> The value of a property of the type <b>Text</b> or <b>Selection</b>, that is linked to <b>Shopzilla.de » Age group</b>.
+            <b>Content:</b> The <b>weight</b> within <b>Items » Edit item » Open item » Open variation » Settings » Dimensions</b>.
         </td>
     </tr>
     <tr>
         <td>
-            Größe
+            Produkttyp
         </td>
         <td>
-            <b>Content:</b> The value of an attribute, with an attribute link for <b>Google Shopping</b> to  <b>Size</b>. As an alternative the value of a property of the type <b>Text</b> or <b>Selection</b>, that is linked to <b>Shopzilla.de » Size</b> can also be used.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Farbe
-        </td>
-        <td>
-            <b>Content:</b> The value of an attribute, with an attribute link for <b>Google Shopping</b> to  <b>Colour</b>. As an alternative the value of a property of the type <b>Text</b> or <b>Selection</b>, that is linked to <b>Shopzilla.de » Colour</b> can also be used.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Material
-        </td>
-        <td>
-            <b>Content:</b> The value of an attribute, with an attribute link for <b>Google Shopping</b> to  <b>Material</b>. As an alternative the value of a property of the type <b>Text</b> or <b>Selection</b>, that is linked to <b>Shopzilla.de » Material</b> can also be used.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Muster
-        </td>
-        <td>
-            <b>Content:</b> The value of an attribute, with an attribute link for <b>Google Shopping</b> to  <b>Pattern</b>. As an alternative the value of a property of the type <b>Text</b> or <b>Selection</b>, that is linked to <b>Shopzilla.de » Pattern</b> can also be used.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Produktgruppe
-        </td>
-        <td>
-            <b>Required for items with variations</b><br>
-            <b>Content:</b> The item ID.
+            <b>Content:</b> The value of a property of the type <b>Text</b> or <b>Selection</b>, that has the backend name <b>product_type</b></b>.
         </td>
     </tr>
     <tr>
@@ -323,23 +261,6 @@ The following table lists details for settings, format settings and recommended 
         </td>
         <td>
             <b>Content:</b> The <b>base price information</b> in the format "price / unit". (Example: 10,00 EUR / kilogram)
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Empfohlener Preis
-        </td>
-        <td>
-            <b>Content:</b> <b>Content:</b> The <b>sales price</b> of the price type <b>RRP</b> of the variation.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Preis
-        </td>
-        <td>
-            <b>Required</b><br>
-            <b>Content:</b> The <b>sales price</b> of the variation.
         </td>
     </tr>
 </table>
