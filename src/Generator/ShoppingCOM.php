@@ -49,11 +49,6 @@ class ShoppingCOM extends CSVPluginGenerator
     private $arrayHelper;
 
     /**
-     * @var array
-     */
-    private $manufacturerCache;
-
-    /**
      * ShoppingCOM constructor.
      *
      * @param ArrayHelper $arrayHelper
@@ -86,8 +81,6 @@ class ShoppingCOM extends CSVPluginGenerator
 
         $this->addCSVContent($this->head());
 
-        $startTime = microtime(true);
-
         if($elasticSearch instanceof VariationElasticSearchScrollRepositoryContract)
         {
             // Initiate the counter for the variations limit
@@ -96,34 +89,21 @@ class ShoppingCOM extends CSVPluginGenerator
 
             do
             {
-                // Number of printed lines
-                $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.writtenLines', [
-                    'Lines written' => $limit,
-                ]);
-
                 // Stop writing if limit is reached
                 if($limitReached === true)
                 {
                     break;
                 }
 
-                $esStartTime = microtime(true);
-
                 // Get the data from Elastic Search
                 $resultList = $elasticSearch->execute();
 
-                $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.esDuration', [
-                    'Elastic Search duration' => microtime(true) - $esStartTime,
-                ]);
-
-                if(count($resultList['error']) > 0)
+                if(!is_null($resultList['error']) && count($resultList['error']) > 0)
                 {
                     $this->getLogger(__METHOD__)->error('ElasticExportShoppingCOM::log.occurredElasticSearchErrors', [
                         'Error message' => $resultList['error'],
                     ]);
                 }
-
-                $buildRowsStartTime = microtime(true);
 
                 if(is_array($resultList['documents']) && count($resultList['documents']) > 0)
                 {
@@ -141,10 +121,6 @@ class ShoppingCOM extends CSVPluginGenerator
                         // If filtered by stock is set and stock is negative, then skip the variation
                         if($this->elasticExportStockHelper->isFilteredByStock($variation, $filter) === true)
                         {
-                            $this->getLogger(__METHOD__)->info('ElasticExportShoppingCOM::log.variationNotPartOfExportStock', [
-                                'VariationId' => (string)$variation['id']
-                            ]);
-
                             continue;
                         }
 
@@ -154,9 +130,6 @@ class ShoppingCOM extends CSVPluginGenerator
                             if($previousItemId === null || $previousItemId != $variation['data']['item']['id'])
                             {
                                 $previousItemId = $variation['data']['item']['id'];
-
-                                // Build the caches arrays
-                                $this->buildCaches($variation);
 
                                 // Build the new row for printing in the CSV file
                                 $this->buildRow($variation, $settings);
@@ -174,18 +147,10 @@ class ShoppingCOM extends CSVPluginGenerator
                             ]);
                         }
                     }
-
-                    $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.buildRowsDuration', [
-                        'Build rows duration' => microtime(true) - $buildRowsStartTime,
-                    ]);
                 }
 
             } while ($elasticSearch->hasNext());
         }
-
-        $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.fileGenerationDuration', [
-            'Whole file generation duration' => microtime(true) - $startTime,
-        ]);
     }
 
     /**
@@ -222,12 +187,6 @@ class ShoppingCOM extends CSVPluginGenerator
      */
     private function buildRow($variation, KeyValue $settings)
     {
-        $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.variationConstructRow', [
-            'Data row duration' => 'Row printing start'
-        ]);
-
-        $rowTime = microtime(true);
-
         // Get the price list
         $priceList = $this->elasticExportPriceHelper->getPriceList($variation, $settings, 2, ',');
 
@@ -237,15 +196,12 @@ class ShoppingCOM extends CSVPluginGenerator
             // Get shipping cost
             $shippingCost = $this->getShippingCost($variation, $settings);
 
-            // Get the manufacturer
-            $manufacturer = $this->getManufacturer($variation);
-
             // Get first item image
             $image = array_shift($this->elasticExportHelper->getImageListInOrder($variation, $settings, 1, ElasticExportCoreHelper::ITEM_IMAGES));
 
             $data = [
                 'Händler-SKU' 			=> $variation['data']['item']['id'],
-                'Hersteller' 			=> $manufacturer,
+                'Hersteller' 			=> $this->elasticExportHelper->getExternalManufacturerName((int)$variation['data']['item']['manufacturer']['id']),
                 'EAN' 					=> $this->elasticExportHelper->getBarcodeByType($variation, $settings->get('barcode')),
                 'Produktname' 			=> $this->elasticExportHelper->getMutatedName($variation, $settings),
                 'Produktbeschreibung' 	=> $this->elasticExportHelper->getMutatedDescription($variation, $settings),
@@ -262,16 +218,6 @@ class ShoppingCOM extends CSVPluginGenerator
             ];
 
             $this->addCSVContent(array_values($data));
-
-            $this->getLogger(__METHOD__)->debug('ElasticExportShoppingCOM::log.variationConstructRowFinished', [
-                'Data row duration' => 'Row printing took: ' . (microtime(true) - $rowTime),
-            ]);
-        }
-        else
-        {
-            $this->getLogger(__METHOD__)->info('ElasticExportShoppingCOM::log.variationNotPartOfExportPrice', [
-                'VariationId' => (string)$variation['id']
-            ]);
         }
     }
 
@@ -292,41 +238,5 @@ class ShoppingCOM extends CSVPluginGenerator
         }
 
         return '';
-    }
-
-    /**
-     * Get the manufacturer name.
-     *
-     * @param $variation
-     * @return string
-     */
-    private function getManufacturer($variation):string
-    {
-        if(isset($this->manufacturerCache) && array_key_exists($variation['data']['item']['manufacturer']['id'], $this->manufacturerCache))
-        {
-            return $this->manufacturerCache[$variation['data']['item']['manufacturer']['id']];
-        }
-
-        return '';
-    }
-
-    /**
-     * Build the cache arrays for the item variation.
-     *
-     * @param $variation
-     */
-    private function buildCaches($variation)
-    {
-        if(!is_null($variation) && !is_null($variation['data']['item']['id']))
-        {
-            if(!is_null($variation['data']['item']['manufacturer']['id']))
-            {
-                if(!isset($this->manufacturerCache) || (isset($this->manufacturerCache) && !array_key_exists($variation['data']['item']['manufacturer']['id'], $this->manufacturerCache)))
-                {
-                    $manufacturer = $this->elasticExportHelper->getExternalManufacturerName((int)$variation['data']['item']['manufacturer']['id']);
-                    $this->manufacturerCache[$variation['data']['item']['manufacturer']['id']] = $manufacturer;
-                }
-            }
-        }
     }
 }
