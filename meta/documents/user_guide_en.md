@@ -200,7 +200,7 @@ The following table lists details for settings, format settings and recommended 
         <td>
             <b>Required</b><br>
             <b>Allowed file types:</b> jpg, gif, bmp, png.<br>
-            <b>Content:</b> The <b>URL path</b> of the first item image according to the format setting <b>image</b>. Item images are prioritizied over item images.
+            <b>Content:</b> The <b>URL path</b> of the first item image according to the format setting <b>image</b>. Item images are prioritizied over variation images.
         </td>
     </tr>
     <tr>
