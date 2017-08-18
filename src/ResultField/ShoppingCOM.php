@@ -11,7 +11,6 @@ use Plenty\Modules\Item\Search\Mutators\ImageMutator;
 use Plenty\Modules\Cloud\ElasticSearch\Lib\Source\Mutator\BuiltIn\LanguageMutator;
 use Plenty\Modules\Item\Search\Mutators\DefaultCategoryMutator;
 use Plenty\Modules\Item\Search\Mutators\KeyMutator;
-use Plenty\Modules\Item\Search\Mutators\SkuMutator;
 
 /**
  * Class ShoppingCOM
@@ -83,15 +82,6 @@ class ShoppingCOM extends ResultFields
         $languageMutator = pluginApp(LanguageMutator::class, [[$settings->get('lang')]]);
 
         /**
-         * @var SkuMutator $skuMutator
-         */
-        $skuMutator = pluginApp(SkuMutator::class);
-        if($skuMutator instanceof SkuMutator)
-        {
-            $skuMutator->setMarket($reference);
-        }
-
-        /**
          * @var DefaultCategoryMutator $defaultCategoryMutator
          */
         $defaultCategoryMutator = pluginApp(DefaultCategoryMutator::class);
@@ -157,9 +147,6 @@ class ShoppingCOM extends ResultFields
                 'unit.content',
                 'unit.id',
 
-                //sku
-                'skus.sku',
-
                 //defaultCategories
                 'defaultCategories.id',
 
@@ -180,7 +167,6 @@ class ShoppingCOM extends ResultFields
 
             [
                 $languageMutator,
-                $skuMutator,
                 $defaultCategoryMutator,
                 $barcodeMutator,
                 $keyMutator,
@@ -240,9 +226,6 @@ class ShoppingCOM extends ResultFields
             'images.item',
             'images.variation',
 
-            //sku
-            'skus',
-
             //texts
             'texts',
 
@@ -283,11 +266,6 @@ class ShoppingCOM extends ResultFields
                 'url',
                 'path',
                 'position',
-            ],
-
-            //sku
-            'skus' => [
-                'sku',
             ],
 
             //texts
