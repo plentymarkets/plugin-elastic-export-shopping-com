@@ -2,36 +2,55 @@
 
 namespace ElasticExportShoppingCOM\Generator;
 
+use ElasticExport\Helper\ElasticExportPriceHelper;
+use ElasticExport\Helper\ElasticExportPropertyHelper;
+use ElasticExport\Helper\ElasticExportStockHelper;
 use Plenty\Modules\DataExchange\Contracts\CSVPluginGenerator;
 use Plenty\Modules\Helper\Services\ArrayHelper;
-use Plenty\Modules\Item\DataLayer\Models\Record;
-use Plenty\Modules\Item\DataLayer\Models\RecordList;
 use Plenty\Modules\DataExchange\Models\FormatSetting;
 use ElasticExport\Helper\ElasticExportCoreHelper;
 use Plenty\Modules\Helper\Models\KeyValue;
-use Plenty\Modules\Item\Property\Contracts\PropertySelectionRepositoryContract;
-use Plenty\Modules\Item\Property\Models\PropertySelection;
-use Plenty\Modules\Helper\Contracts\UrlBuilderRepositoryContract;
+use Plenty\Modules\Item\Search\Contracts\VariationElasticSearchScrollRepositoryContract;
+use Plenty\Plugin\Log\Loggable;
 
+/**
+ * Class ShoppingCOM
+ * @package ElasticExportShoppingCOM\Generator
+ */
 class ShoppingCOM extends CSVPluginGenerator
 {
+    use Loggable;
+
+    const DELIMITER = ",";
+
     /**
-     * @var ElasticExportCoreHelper
+     * @var ElasticExportCoreHelper $elasticExportHelper
      */
     private $elasticExportHelper;
 
-    /*
+    /**
+     * @var ElasticExportStockHelper
+     */
+    private $elasticExportStockHelper;
+
+    /**
+     * @var ElasticExportPriceHelper
+     */
+    private $elasticExportPriceHelper;
+
+    /**
+     * @var ElasticExportPropertyHelper
+     */
+    private $elasticExportPropertyHelper;
+
+    /**
      * @var ArrayHelper
      */
     private $arrayHelper;
 
     /**
-     * @var array $idlVariations
-     */
-    private $idlVariations;
-
-    /**
-     * Shopping constructor.
+     * ShoppingCOM constructor.
+     *
      * @param ArrayHelper $arrayHelper
      */
     public function __construct(ArrayHelper $arrayHelper)
@@ -40,115 +59,184 @@ class ShoppingCOM extends CSVPluginGenerator
     }
 
     /**
-     * @param array $resultData
+     * Generates and populates the data into the CSV file.
+     *
+     * @param VariationElasticSearchScrollRepositoryContract $elasticSearch
      * @param array $formatSettings
      * @param array $filter
      */
-    protected function generatePluginContent($resultData, array $formatSettings = [], array $filter = [])
+    protected function generatePluginContent($elasticSearch, array $formatSettings = [], array $filter = [])
     {
         $this->elasticExportHelper = pluginApp(ElasticExportCoreHelper::class);
-        if(is_array($resultData['documents']) && count($resultData['documents']) > 0)
+
+        $this->elasticExportStockHelper = pluginApp(ElasticExportStockHelper::class);
+
+        $this->elasticExportPriceHelper = pluginApp(ElasticExportPriceHelper::class);
+
+        $this->elasticExportPropertyHelper = pluginApp(ElasticExportPropertyHelper::class);
+
+        $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
+
+        $this->setDelimiter(self::DELIMITER);
+
+        $this->addCSVContent($this->head());
+
+        if($elasticSearch instanceof VariationElasticSearchScrollRepositoryContract)
         {
-            $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
+            // Initiate the counter for the variations limit
+            $limitReached = false;
+            $limit = 0;
 
-            $this->setDelimiter(",");
-
-            $this->addCSVContent([
-                'Händler-SKU',
-                'Hersteller',
-                'EAN',
-                'Produktname',
-                'Produktbeschreibung',
-                'Preis',
-                'Produkt-URL',
-                'Produktbild-URL',
-                'Kategorie',
-                'Verfügbar',
-                'Verfügbarkeitdetails',
-                'Versand: Landtarif',
-                'Produktgewicht',
-                'Produkttyp',
-                'Grundpreis',
-            ]);
-
-            //Create a List of all VariationIds
-            $variationIdList = array();
-            foreach($resultData['documents'] as $variation)
+            do
             {
-                $variationIdList[] = $variation['id'];
-            }
-
-            //Get the missing fields in ES from IDL
-            if(is_array($variationIdList) && count($variationIdList) > 0)
-            {
-                /**
-                 * @var \ElasticExportShoppingCOM\IDL_ResultList\ShoppingCOM $idlResultList
-                 */
-                $idlResultList = pluginApp(\ElasticExportShoppingCOM\IDL_ResultList\ShoppingCOM::class);
-                $idlResultList = $idlResultList->getResultList($variationIdList, $settings);
-            }
-
-            //Creates an array with the variationId as key to surpass the sorting problem
-            if(isset($idlResultList) && $idlResultList instanceof RecordList)
-            {
-                $this->createIdlArray($idlResultList);
-            }
-
-            foreach($resultData['documents'] as $item)
-            {
-                $deliveryCost = $this->elasticExportHelper->getShippingCost($item['data']['item']['id'], $settings);
-                if(!is_null($deliveryCost))
+                // Stop writing if limit is reached
+                if($limitReached === true)
                 {
-                    $deliveryCost = number_format((float)$deliveryCost, 2, ',', '');
-                }
-                else
-                {
-                    $deliveryCost = '';
+                    break;
                 }
 
-                $data = [
-                    'Händler-SKU' 			=> $item['data']['item']['id'],
-                    'Hersteller' 			=> $this->elasticExportHelper->getExternalManufacturerName((int)$item['data']['item']['manufacturer']['id']),
-                    'EAN' 					=> $this->elasticExportHelper->getBarcodeByType($item, $settings->get('barcode')),
-                    'Produktname' 			=> $this->elasticExportHelper->getName($item, $settings),
-                    'Produktbeschreibung' 	=> $this->elasticExportHelper->getDescription($item, $settings),
-                    'Preis' 				=> number_format((float)$this->idlVariations[$item['id']]['variationRetailPrice.price'], 2, ',', ''),
-                    'Produkt-URL' 			=> $this->elasticExportHelper->getUrl($item, $settings, true, false),
-                    'Produktbild-URL' 		=> $this->elasticExportHelper->getMainImage($item, $settings),
-                    'Kategorie'				=> $this->elasticExportHelper->getCategory((int)$item['data']['defaultCategories'][0]['id'], $settings->get('lang'), $settings->get('plentyId')),
-                    'Verfügbar' 			=> 'Ja',
-                    'Verfügbarkeitdetails' 	=> $this->elasticExportHelper->getAvailability($item, $settings),
-                    'Versand: Landtarif' 	=> $deliveryCost,
-                    'Produktgewicht'        => $item['data']['variation']['weightG'],
-                    'Produkttyp' 			=> $this->elasticExportHelper->getItemCharacterByBackendName($item, $settings, 'product_type'),
-                    'Grundpreis' 			=> $this->elasticExportHelper->getBasePrice($item, $this->idlVariations[$item['id']]),
-                ];
+                // Get the data from Elastic Search
+                $resultList = $elasticSearch->execute();
 
-                $this->addCSVContent(array_values($data));
-            }
+                if(!is_null($resultList['error']) && count($resultList['error']) > 0)
+                {
+                    $this->getLogger(__METHOD__)->error('ElasticExportShoppingCOM::log.occurredElasticSearchErrors', [
+                        'Error message' => $resultList['error'],
+                    ]);
+                }
+
+                if(is_array($resultList['documents']) && count($resultList['documents']) > 0)
+                {
+                    $previousItemId = null;
+
+                    foreach ($resultList['documents'] as $variation)
+                    {
+                        // Stop and set the flag if limit is reached
+                        if($limit == $filter['limit'])
+                        {
+                            $limitReached = true;
+                            break;
+                        }
+
+                        // If filtered by stock is set and stock is negative, then skip the variation
+                        if($this->elasticExportStockHelper->isFilteredByStock($variation, $filter) === true)
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+                            // Set the caches if we have the first variation or when we have the first variation of an item
+                            if($previousItemId === null || $previousItemId != $variation['data']['item']['id'])
+                            {
+                                $previousItemId = $variation['data']['item']['id'];
+
+                                // Build the new row for printing in the CSV file
+                                $this->buildRow($variation, $settings);
+
+                                // New line was added
+                                $limit++;
+                            }
+                        }
+                        catch(\Throwable $throwable)
+                        {
+                            $this->getLogger(__METHOD__)->error('ElasticExportShoppingCOM::logs.fillRowError', [
+                                'Error message ' => $throwable->getMessage(),
+                                'Error line'     => $throwable->getLine(),
+                                'VariationId'    => (string)$variation['id']
+                            ]);
+                        }
+                    }
+                }
+
+            } while ($elasticSearch->hasNext());
         }
     }
 
     /**
-     * @param RecordList $idlResultList
+     * Creates the header of the CSV file.
+     *
+     * @return array
      */
-    private function createIdlArray($idlResultList)
+    private function head():array
     {
-        if($idlResultList instanceof RecordList)
+        return array(
+            'Händler-SKU',
+            'Hersteller',
+            'EAN',
+            'Produktname',
+            'Produktbeschreibung',
+            'Preis',
+            'Produkt-URL',
+            'Produktbild-URL',
+            'Kategorie',
+            'Verfügbar',
+            'Verfügbarkeitdetails',
+            'Versand: Landtarif',
+            'Produktgewicht',
+            'Produkttyp',
+            'Grundpreis',
+        );
+    }
+
+    /**
+     * Creates the variation row and prints it into the CSV file.
+     *
+     * @param array $variation
+     * @param KeyValue $settings
+     */
+    private function buildRow($variation, KeyValue $settings)
+    {
+        // Get the price list
+        $priceList = $this->elasticExportPriceHelper->getPriceList($variation, $settings, 2, ',');
+
+        // Only variations with the Retail Price greater than zero will be handled
+        if(!is_null($priceList['price']) && $priceList['price'] > 0)
         {
-            foreach($idlResultList as $idlVariation)
-            {
-                if($idlVariation instanceof Record)
-                {
-                    $this->idlVariations[$idlVariation->variationBase->id] = [
-                        'itemBase.id' => $idlVariation->itemBase->id,
-                        'variationBase.id' => $idlVariation->variationBase->id,
-                        'itemPropertyList' => $idlVariation->itemPropertyList,
-                        'variationRetailPrice.price' => $idlVariation->variationRetailPrice->price,
-                        'variationRetailPrice.vatValue' => $idlVariation->variationRetailPrice->vatValue,
-                    ];
-                }
-            }
+            // Get shipping cost
+            $shippingCost = $this->getShippingCost($variation, $settings);
+
+            // Get first item image
+            $image = array_shift($this->elasticExportHelper->getImageListInOrder($variation, $settings, 1, ElasticExportCoreHelper::ITEM_IMAGES));
+
+            $data = [
+                'Händler-SKU' 			=> $variation['data']['item']['id'],
+                'Hersteller' 			=> $this->elasticExportHelper->getExternalManufacturerName((int)$variation['data']['item']['manufacturer']['id']),
+                'EAN' 					=> $this->elasticExportHelper->getBarcodeByType($variation, $settings->get('barcode')),
+                'Produktname' 			=> $this->elasticExportHelper->getMutatedName($variation, $settings),
+                'Produktbeschreibung' 	=> $this->elasticExportHelper->getMutatedDescription($variation, $settings),
+                'Preis' 				=> $priceList['price'],
+                'Produkt-URL' 			=> $this->elasticExportHelper->getMutatedUrl($variation, $settings, true, false),
+                'Produktbild-URL' 		=> $image,
+                'Kategorie'				=> $this->elasticExportHelper->getCategory((int)$variation['data']['defaultCategories'][0]['id'], $settings->get('lang'), $settings->get('plentyId')),
+                'Verfügbar' 			=> 'Ja',
+                'Verfügbarkeitdetails' 	=> $this->elasticExportHelper->getAvailability($variation, $settings),
+                'Versand: Landtarif' 	=> $shippingCost,
+                'Produktgewicht'        => $variation['data']['variation']['weightG'],
+                'Produkttyp' 			=> $this->elasticExportPropertyHelper->getItemPropertyByBackendName($variation, 'product_type', $settings->get('lang')),
+                'Grundpreis' 			=> $this->elasticExportPriceHelper->getBasePrice($variation, $priceList['price']),
+            ];
+
+            $this->addCSVContent(array_values($data));
         }
+    }
+
+    /**
+     * Get the shipping cost.
+     *
+     * @param $variation
+     * @param $settings
+     * @return string
+     */
+    private function getShippingCost($variation, $settings):string
+    {
+        $shippingCost = $this->elasticExportHelper->getShippingCost($variation['data']['item']['id'], $settings, 0);
+
+        if(!is_null($shippingCost) && $shippingCost > 0)
+        {
+            return number_format((float)$shippingCost, 2, ',', '');
+        }
+
+        return '';
     }
 }

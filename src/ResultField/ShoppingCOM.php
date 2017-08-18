@@ -2,22 +2,30 @@
 
 namespace ElasticExportShoppingCOM\ResultField;
 
+use Plenty\Modules\Cloud\ElasticSearch\Lib\ElasticSearch;
 use Plenty\Modules\DataExchange\Contracts\ResultFields;
 use Plenty\Modules\DataExchange\Models\FormatSetting;
 use Plenty\Modules\Helper\Services\ArrayHelper;
+use Plenty\Modules\Item\Search\Mutators\BarcodeMutator;
 use Plenty\Modules\Item\Search\Mutators\ImageMutator;
 use Plenty\Modules\Cloud\ElasticSearch\Lib\Source\Mutator\BuiltIn\LanguageMutator;
 use Plenty\Modules\Item\Search\Mutators\DefaultCategoryMutator;
+use Plenty\Modules\Item\Search\Mutators\KeyMutator;
 
+/**
+ * Class ShoppingCOM
+ * @package ElasticExportShoppingCOM\ResultField
+ */
 class ShoppingCOM extends ResultFields
 {
-    /*
+    /**
 	 * @var ArrayHelper
 	 */
     private $arrayHelper;
 
     /**
-     * Shopping constructor.
+     * ShoppingCOM constructor.
+     *
      * @param ArrayHelper $arrayHelper
      */
     public function __construct(ArrayHelper $arrayHelper)
@@ -26,7 +34,8 @@ class ShoppingCOM extends ResultFields
     }
 
     /**
-     * Generate result fields.
+     * Creates the fields set to be retrieved from ElasticSearch.
+     *
      * @param  array $formatSettings = []
      * @return array
      */
@@ -34,26 +43,13 @@ class ShoppingCOM extends ResultFields
     {
         $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
 
-        $reference = $settings->get('referrerId') ? $settings->get('referrerId') : -1;
+        $this->setOrderByList(['item.id', ElasticSearch::SORTING_ORDER_ASC]);
 
-        $itemDescriptionFields = ['texts.urlPath'];
-        $itemDescriptionFields[] = 'texts.keywords';
+        $reference = $settings->get('referrerId');
 
-        switch($settings->get('nameId'))
-        {
-            case 1:
-                $itemDescriptionFields[] = 'texts.name1';
-                break;
-            case 2:
-                $itemDescriptionFields[] = 'texts.name2';
-                break;
-            case 3:
-                $itemDescriptionFields[] = 'texts.name3';
-                break;
-            default:
-                $itemDescriptionFields[] = 'texts.name1';
-                break;
-        }
+        $itemDescriptionFields = ['texts.urlPath', 'texts.lang'];
+
+        $itemDescriptionFields[] = ($settings->get('nameId')) ? 'texts.name' . $settings->get('nameId') : 'texts.name1';
 
         if($settings->get('descriptionType') == 'itemShortDescription'
             || $settings->get('previewTextType') == 'itemShortDescription')
@@ -79,10 +75,12 @@ class ShoppingCOM extends ResultFields
         {
             $imageMutator->addMarket($reference);
         }
+
         /**
          * @var LanguageMutator $languageMutator
          */
         $languageMutator = pluginApp(LanguageMutator::class, [[$settings->get('lang')]]);
+
         /**
          * @var DefaultCategoryMutator $defaultCategoryMutator
          */
@@ -90,6 +88,25 @@ class ShoppingCOM extends ResultFields
         if($defaultCategoryMutator instanceof DefaultCategoryMutator)
         {
             $defaultCategoryMutator->setPlentyId($settings->get('plentyId'));
+        }
+
+        /**
+         * @var BarcodeMutator $barcodeMutator
+         */
+        $barcodeMutator = pluginApp(BarcodeMutator::class);
+        if($barcodeMutator instanceof BarcodeMutator)
+        {
+            $barcodeMutator->addMarket($reference);
+        }
+
+        /**
+         * @var KeyMutator $keyMutator
+         */
+        $keyMutator = pluginApp(KeyMutator::class);
+        if($keyMutator instanceof KeyMutator)
+        {
+            $keyMutator->setKeyList($this->getKeyList());
+            $keyMutator->setNestedKeyList($this->getNestedKeyList());
         }
 
         $fields = [
@@ -101,7 +118,7 @@ class ShoppingCOM extends ResultFields
                 //variation
                 'id',
                 'variation.availability.id',
-                'variation.model',
+                'variation.stockLimitation',
                 'variation.weightG',
 
                 //images
@@ -130,9 +147,6 @@ class ShoppingCOM extends ResultFields
                 'unit.content',
                 'unit.id',
 
-                //sku
-                'skus.sku',
-
                 //defaultCategories
                 'defaultCategories.id',
 
@@ -140,13 +154,22 @@ class ShoppingCOM extends ResultFields
                 'barcodes.code',
                 'barcodes.type',
 
-                //attributes
-                'attributes.attributeValueSetId',
+                //properties
+                'properties.property.id',
+                'properties.property.valueType',
+                'properties.selection.name',
+                'properties.selection.lang',
+                'properties.texts.value',
+                'properties.texts.lang',
+                'properties.valueInt',
+                'properties.valueFloat',
             ],
 
             [
                 $languageMutator,
-                $defaultCategoryMutator
+                $defaultCategoryMutator,
+                $barcodeMutator,
+                $keyMutator,
             ],
         ];
 
@@ -161,5 +184,126 @@ class ShoppingCOM extends ResultFields
         }
 
         return $fields;
+    }
+
+    /**
+     * Returns the list of keys.
+     *
+     * @return array
+     */
+    private function getKeyList()
+    {
+        $keyList = [
+            //item
+            'item.id',
+            'item.manufacturer.id',
+
+            //variation
+            'variation.availability.id',
+            'variation.stockLimitation',
+            'variation.vatId',
+            'variation.model',
+            'variation.weightG',
+
+            //unit
+            'unit.content',
+            'unit.id',
+        ];
+
+        return $keyList;
+    }
+
+    /**
+     * Returns the list of nested keys.
+     *
+     * @return mixed
+     */
+    private function getNestedKeyList()
+    {
+        $nestedKeyList['keys'] = [
+            //images
+            'images.all',
+            'images.item',
+            'images.variation',
+
+            //texts
+            'texts',
+
+            //defaultCategories
+            'defaultCategories',
+
+            //barcodes
+            'barcodes',
+
+            //properties
+            'properties',
+        ];
+
+        $nestedKeyList['nestedKeys'] = [
+            //images
+            'images.all' => [
+                'urlMiddle',
+                'urlPreview',
+                'urlSecondPreview',
+                'url',
+                'path',
+                'position',
+            ],
+
+            'images.item' => [
+                'urlMiddle',
+                'urlPreview',
+                'urlSecondPreview',
+                'url',
+                'path',
+                'position',
+            ],
+
+            'images.variation' => [
+                'urlMiddle',
+                'urlPreview',
+                'urlSecondPreview',
+                'url',
+                'path',
+                'position',
+            ],
+
+            //texts
+            'texts' => [
+                'urlPath',
+                'lang',
+                'name1',
+                'name2',
+                'name3',
+                'shortDescription',
+                'description',
+                'technicalData',
+            ],
+
+            //defaultCategories
+            'defaultCategories' => [
+                'id',
+            ],
+
+            //barcodes
+            'barcodes' => [
+                'code',
+                'type',
+            ],
+
+            //proprieties
+            'properties'    => [
+                'property.id',
+                'property.valueType',
+                'selection.name',
+                'selection.lang',
+                'texts.value',
+                'texts.lang',
+                'valueInt',
+                'valueFloat',
+            ],
+        ];
+
+        return $nestedKeyList;
     }
 }
