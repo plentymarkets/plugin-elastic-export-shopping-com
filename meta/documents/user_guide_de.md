@@ -154,7 +154,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             Hersteller
         </td>
         <td>
-            <b>Inhalt:</b> Der <b>Name des Herstellers</b> des Artikels. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
+            <b>Inhalt:</b> Der <b>Herstellers</b> des Artikels. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
         </td>
     </tr>
     <tr>
@@ -209,7 +209,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         <td>
             <b>Pflichtfeld</b><br>
             <b>Erlaubte Dateitypen:</b> jpg, gif, bmp, png.<br>
-            <b>Inhalt:</b> Der <b>URL-Pfad</b> des ersten Artikelbild nach dem Formateinstellung <b>bild</b>. Artikelbilder werden über Artikelbilder priorisiert.
+            <b>Inhalt:</b> Der <b>URL-Pfad</b> des ersten Artikelbilds entsprechend der Formateinstellung <b>Bild</b>. Artikelbilder werden vor Variantenbilder priorisiert.
         </td>
     </tr>
     <tr>
@@ -218,7 +218,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Der <b>Kategoriepfad der Standard-Kategorie</b> für den in den Formateinstellungen definierten <b>Mandanten</b>.
+            <b>Inhalt:</b> Der <b>Kategoriepfad der Standardkategorie</b> für den in den Formateinstellungen definierten <b>Mandanten</b>.
         </td>
     </tr>
     <tr>
@@ -253,7 +253,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             Produktgewicht
         </td>
         <td>
-            <b>Inhalt:</b> Das <b>Gewicht</b> unter <b>Artikel » Artikel bearbeiten » Artikel öffnen » Variante öffnen » Einstellungen » Maße</b>.
+            <b>Inhalt:</b> Das <b>Gewicht</b> wie unter <b>Artikel » Artikel bearbeiten » Artikel öffnen » Variante öffnen » Einstellungen » Maße</b> definiert.
         </td>
     </tr>
     <tr>
@@ -261,7 +261,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             Produkttyp
         </td>
         <td>
-            <b>Inhalt:</b> Der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>product_type</b> backend name hat.
+            <b>Inhalt:</b> Der Wert eines Merkmals vom Typ <b>Text</b> oder <b>Auswahl</b>, das mit <b>product_type</b> verknüpft ist.
         </td>
     </tr>
     <tr>
