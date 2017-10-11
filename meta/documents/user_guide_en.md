@@ -263,6 +263,14 @@ The following table lists details for settings, format settings and recommended 
             <b>Content:</b> The <b>base price information</b> in the format "price / unit". (Example: 10,00 EUR / kilogram)
         </td>
     </tr>
+    <tr>
+        <td>
+            Zustand
+        </td>
+        <td>
+            <b>Content:</b> The condition of the item. According to <b>Item » Edit item » Global » Basic Settings » Condition for API</b>.
+        </td>
+    </tr>
 </table>
 
 ## 4 License

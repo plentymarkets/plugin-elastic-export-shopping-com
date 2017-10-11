@@ -1,5 +1,10 @@
 # Release Notes für Elastic Export Shopping.com
 
+## v1.0.7 (2017-10-11)
+
+### Hinzugefügt
+- Die Spalte "Zustand" wurde hinzugefügt.
+
 ## v1.0.6 (2017-08-18)
 
 ### Geändert

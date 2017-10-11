@@ -114,6 +114,7 @@ class ShoppingCOM extends ResultFields
                 //item
                 'item.id',
                 'item.manufacturer.id',
+                'item.conditionApi',
 
                 //variation
                 'id',
@@ -197,6 +198,7 @@ class ShoppingCOM extends ResultFields
             //item
             'item.id',
             'item.manufacturer.id',
+            'item.conditionApi',
 
             //variation
             'variation.availability.id',
