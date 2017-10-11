@@ -272,6 +272,14 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             <b>Inhalt:</b> Die <b>Grundpreisinformation</b> im Format "Preis / Einheit". (Beispiel: 10,00 EUR / Kilogramm)
         </td>
     </tr>
+    <tr>
+        <td>
+            Zustand
+        </td>
+        <td>
+            <b>Inhalt:</b> Der Zustand des Artikels. Anhand <b>Artikel » Artikel bearbeiten » Global » Grundeinstellungen » Zustand API</b>
+        </td>
+    </tr>
 </table>
 
 ## 4 Lizenz

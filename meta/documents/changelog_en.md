@@ -1,5 +1,10 @@
 # Release Notes for Elastic Export Shopping.com
 
+## v1.0.7 (2017-10-11)
+
+### Added
+- The column "Zustand" was added to export the condition of the item.
+
 ## v1.0.6 (2017-08-18)
 
 ### Changed 

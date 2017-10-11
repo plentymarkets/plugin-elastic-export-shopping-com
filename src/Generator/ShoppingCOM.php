@@ -23,6 +23,10 @@ class ShoppingCOM extends CSVPluginGenerator
 
     const DELIMITER = ",";
 
+    const CONDITION_NEW         = 'New';
+    const CONDITION_USED        = 'Used';
+    const CONDITION_REFURBISHED = 'Refurbished';
+
     /**
      * @var ElasticExportCoreHelper $elasticExportHelper
      */
@@ -176,6 +180,7 @@ class ShoppingCOM extends CSVPluginGenerator
             'Produktgewicht',
             'Produkttyp',
             'Grundpreis',
+            'Zustand',
         );
     }
 
@@ -215,6 +220,7 @@ class ShoppingCOM extends CSVPluginGenerator
                 'Produktgewicht'        => $variation['data']['variation']['weightG'],
                 'Produkttyp' 			=> $this->elasticExportPropertyHelper->getItemPropertyByBackendName($variation, 'product_type', $settings->get('lang')),
                 'Grundpreis' 			=> $this->elasticExportPriceHelper->getBasePrice($variation, $priceList['price']),
+                'Zustand'               => $this->translateCondition($variation['data']['item']['conditionApi']['id'])
             ];
 
             $this->addCSVContent(array_values($data));
@@ -238,5 +244,29 @@ class ShoppingCOM extends CSVPluginGenerator
         }
 
         return '';
+    }
+
+    /**
+     * @param  int      $condition
+     * @return string
+     */
+    private function translateCondition(int $condition):string
+    {
+        switch ($condition){
+            case 0:
+                return self::CONDITION_NEW;
+            case 1:
+                return self::CONDITION_USED;
+            case 2:
+                return self::CONDITION_USED;
+            case 3:
+                return self::CONDITION_USED;
+            case 4:
+                return self::CONDITION_USED;
+            case 5:
+                return self::CONDITION_REFURBISHED;
+            default:
+                return self::CONDITION_NEW;
+        }
     }
 }
