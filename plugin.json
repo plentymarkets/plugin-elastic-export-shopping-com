@@ -13,10 +13,8 @@
     "de": "Die Integration des Datenformats ShoppingCom-Plugin ermöglicht die Artikeldatenübertragung zum Preisportal shopping.com über den elastischen Export.",
     "en": "The integration of the data format ShoppingCom-Plugin enables the transfer of item data to the price search engine shopping.com via the elastic export."
   },
-  "categories": [
-    "3523"
-  ],
-  "version": "1.0.8",
+  "categories": ["3523"],
+  "version": "1.0.9",
   "marketplaceName": {
     "de": "Shopping.com",
     "en": "Shopping.com"
