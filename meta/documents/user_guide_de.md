@@ -10,7 +10,7 @@ Shopping.com ist ein internationaler Produkt- und Preisvergleichsdienst.
 
 Mit der Installation dieses Plugins erhalten Sie das Exportformat **ShoppingCOM-Plugin**, mit dem Sie Daten über den elastischen Export zu Shopping.com übertragen. Um dieses Format für den elastischen Export nutzen zu können, installieren Sie zunächst das Plugin **Elastic Export** aus dem plentyMarketplace, wenn noch nicht geschehen. 
 
-Sobald beide Plugins in Ihrem System installiert sind, kann das Exportformat **ShoppingCOM-Plugin** erstellt werden. Weitere Informationen finden Sie auch auf der Handbuchseite [Datenformate für Preissuchmaschinen exportieren](https://knowledge.plentymarkets.com/basics/datenaustausch/export-import/daten-exportieren#30).
+Sobald beide Plugins in Ihrem System installiert sind, kann das Exportformat **ShoppingCOM-Plugin** erstellt werden. Weitere Informationen finden Sie auf der Handbuchseite [Elastischer Export](https://knowledge.plentymarkets.com/basics/datenaustausch/elastischer-export).
 
 Neues Exportformat erstellen:
 
