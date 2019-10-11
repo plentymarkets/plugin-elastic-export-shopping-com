@@ -10,14 +10,14 @@ Shopping.com is an international product and price comparison service.
 
 By installing this plugin you will receive the export format **ShoppingCOM-Plugin**. Use this format to exchange data between plentymarkets and Shopping.com. It is required to install the Plugin **Elastic Export** from the plentyMarketplace first before you can use the format **ShoppingCOM-Plugin** in plentymarkets.
 
-Once both plugins are installed, you can create the export format **ShoppingCOM-Plugin**. Refer to the [Elastic Export](https://knowledge.plentymarkets.com/en/basics/data-exchange/elastic-export) page of the manual for further details about the individual format settings.
+Once both plugins are installed, you can create the export format **ShoppingCOM-Plugin**. Refer to the [Elastic Export](https://knowledge.plentymarkets.com/en/data/exporting-data/elastic-export) page of the manual for further details about the individual format settings.
 
 Creating a new export format:
 
 1. Go to **Data » Elastic export**.
 2. Click on **New export**.
 3. Carry out the settings as desired. Pay attention to the information given in table 1.
-4. **Save** the settings.
+4. **Save** the settings.<br>
 → The export format is given an ID and it appears in the overview within the **Exports** tab.
 
 The following table lists details for settings, format settings and recommended item filters for the format **ShoppingCOM-Plugin**.
@@ -39,8 +39,8 @@ The following table lists details for settings, format settings and recommended 
 | **Product URL**                                      | Choose the URL that you wish to transfer to the price comparison portal. You can choose between the item’s URL and the variation’s URL. URLs of variations can only be transferred in combination with the Ceres store. |
 | **Client**                                           | Select a client. This setting is used for the URL structure. |
 | **URL parameter**                                    | Enter a suffix for the product URL if this is required for the export. This character string is added to the product URL if you have activated the transfer option for the product URL further up. |
-| **Order referrer**                                   | Select the order referrer that should be assigned during the order import. |
-| **Marketplace account**                              | Select the marketplace account from the drop-down list. The selected referrer is added to the product URL so that sales can be analysed later. |
+| **Order referrer**                                   | Select the order referrer that should be assigned during the order import. The selected referrer is added to the product URL so that sales can be analysed later. |
+| **Marketplace account**                              | Select the marketplace account from the drop-down list. |
 | **Language**                                         | Select the language from the drop-down list. |
 | **Item name**                                        | Select **Name 1**, **Name 2** or **Name 3**. These names are saved in the **Texts** tab of the item.<br/> Enter a number into the **Maximum number of characters (def. Text)** field if desired. This specifies how many characters are exported for the item name. |
 | **Preview text**                                     | This option does not affect this format. |
@@ -67,7 +67,7 @@ _Tab. 1: Settings for the data format **ShoppingCOM-Plugin**_
 | **Column description** | **Explanation** |
 | :---                   | :--- |
 | Händler-SKU            | **Required**<br/> The item ID of the main variation. |
-| Hersteller             | The **name of the manufacturer** of the item. The **external name** within **System » Item » Manufacturer** is preferred if existing. |
+| Hersteller             | The **name of the manufacturer** of the item. The **external name** within **Setup » Item » Manufacturer** is preferred if existing. |
 | EAN                    | **Required**<br/> According to the format setting **Barcode**. |
 | Produktname            | **Required**<br/> According to the format setting **Item name**. |
 | Produktbeschreibung    | **Required**<br/> According to the format setting **Description**. |
