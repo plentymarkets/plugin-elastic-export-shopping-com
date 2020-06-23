@@ -1,5 +1,10 @@
 # Release Notes for Elastic Export Shopping.com
 
+## v1.0.13 (2020-06-24)
+
+### Changed
+- The plugin description was moved to the plentymarkets manual.
+
 ## v1.0.13 (2019-10-11)
 
 ### Changed
@@ -69,6 +74,6 @@
 - Fix for the path of the IDL_ResultList
 
 ## v1.0.0 (2017-03-10)
- 
+
 ### Added
 - Added initial plugin files
