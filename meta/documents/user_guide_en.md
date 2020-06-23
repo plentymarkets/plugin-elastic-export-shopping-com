@@ -1,7 +1,7 @@
 # ElasticExportShoppingCOM plugin user guide
 
 <div class="alert alert-info" role="alert">
-  To find out how to set up the plugin for the export format ElasticExportShoppingCOM, visit the <a href="hhttps://knowledge.plentymarkets.com/en/markets/price-search-engines/shopping-com" target="_blank">plentymarkets manual</a>.
+  To find out how to set up the plugin for the export format ElasticExportShoppingCOM, visit the <a href="https://knowledge.plentymarkets.com/en/markets/price-search-engines/shopping-com" target="_blank">plentymarkets manual</a>.
 </div>
 
 ## License
