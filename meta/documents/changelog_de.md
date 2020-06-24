@@ -1,5 +1,10 @@
 # Release Notes für Elastic Export Shopping.com
 
+## v1.0.14 (2020-06-24)
+
+### Geändert
+- Die Plugin-Beschreibung wurde in das plentymarkets Handbuch umgezogen.
+
 ## v1.0.13 (2019-10-11)
 
 ### Geändert
