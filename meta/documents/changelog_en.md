@@ -1,6 +1,11 @@
 # Release Notes for Elastic Export Shopping.com
 
-## v1.0.13 (2020-06-24)
+## v1.0.15 (2022-05-26)
+
+### Changed
+- UPDATE - Additional updates to ensure compatibility with PHP 8.
+
+## v1.0.14 (2020-06-24)
 
 ### Changed
 - The plugin description was moved to the plentymarkets manual.
