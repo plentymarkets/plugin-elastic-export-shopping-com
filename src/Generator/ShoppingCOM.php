@@ -223,7 +223,7 @@ class ShoppingCOM extends CSVPluginGenerator
                 'Versand: Landtarif' 	=> $shippingCost,
                 'Produktgewicht'        => $variation['data']['variation']['weightG'],
                 'Produkttyp' 			=> $this->elasticExportPropertyHelper->getItemPropertyByBackendName($variation, 'product_type', $settings->get('lang')),
-                'Grundpreis' 			=> $this->elasticExportPriceHelper->getBasePrice($variation, $priceList['price']),
+                'Grundpreis' 			=> $this->elasticExportPriceHelper->getBasePrice($variation, (float) $priceList['price']),
                 'Zustand'               => $this->translateCondition($variation['data']['item']['conditionApi']['id'])
             ];
 
