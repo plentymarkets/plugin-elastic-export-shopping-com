@@ -14,10 +14,13 @@
     "en": "The integration of the data format ShoppingCom-Plugin enables the transfer of item data to the price search engine shopping.com via the elastic export."
   },
   "categories": ["3880"],
-  "version": "1.0.15",
+  "version": "1.0.16",
   "marketplaceName": {
     "de": "Shopping.com",
     "en": "Shopping.com"
+  },
+  "platform": {
+    "php": ">= 7.3 <8.1"
   },
   "require": {
     "ElasticExport": ">= 1.6.6"
