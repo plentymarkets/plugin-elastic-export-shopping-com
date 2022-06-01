@@ -1,5 +1,9 @@
 # Release Notes for Elastic Export Shopping.com
 
+## v1.0.16 (2022-05-31)
+### Fixed
+- Fixed PHP8 error.
+
 ## v1.0.15 (2022-05-26)
 
 ### Changed
