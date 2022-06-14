@@ -1,5 +1,9 @@
 # Release Notes for Elastic Export Shopping.com
 
+## v1.0.17 (2022-06-14)
+### Changed
+- The plugin user guide was updated.
+
 ## v1.0.16 (2022-05-31)
 ### Fixed
 - Fixed PHP8 error.
